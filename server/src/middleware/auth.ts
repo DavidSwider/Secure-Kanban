@@ -14,13 +14,18 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
     return res.sendStatus(401); // Unauthorized
   }
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET_KEY as string, (err, user) => {
     if (err) {
       return res.sendStatus(403); // Forbidden
     }
 
+    if (!user) {
+      return res.sendStatus(403); // Forbidden
+    }
+
     req.user = user as JwtPayload;
-    next();
+    return next();
   });
+  return;
 };
 

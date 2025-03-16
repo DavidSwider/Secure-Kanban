@@ -8,7 +8,7 @@ export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ where: { username } });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
@@ -18,7 +18,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Invalid password' });
     }
 
-    const token = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '1h' });
+    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY as string, { expiresIn: '1h' });
     return res.json({ token });
   } catch (error) {
     console.error('Error during login:', error);
